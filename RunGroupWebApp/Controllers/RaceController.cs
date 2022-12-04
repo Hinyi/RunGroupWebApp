@@ -65,6 +65,7 @@ namespace RunGroupWebApp.Controllers
                 _raceRepository.Add(race);
                 return RedirectToAction("Index");
             }
+
             else
             {
                 ModelState.AddModelError("", "Photo upload failed");
