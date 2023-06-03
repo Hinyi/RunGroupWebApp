@@ -111,14 +111,22 @@ namespace RunGroupWebApp.Controllers
                     return View(clubVM);
                 }
 
-                var photoResult = await _photoService.AddPhotoAsync(clubVM.Image);
+                string photoResult = string.Empty;
+                if (clubVM.Image != null)
+                {
+                    var result = await _photoService.AddPhotoAsync(clubVM.Image);
+                    photoResult = result.Url.ToString();
+                }
+                else
+                {
+                    photoResult = userClub.Image;}
 
                 var club = new Club
                 {
                     Id = id,
                     Title = clubVM.Title,
                     Description = clubVM.Description,
-                    Image = photoResult.Url.ToString(),
+                    Image = photoResult,//.Url.ToString(),
                     Address = clubVM.Address,
                     AddressId = clubVM.AddressId
                 };
