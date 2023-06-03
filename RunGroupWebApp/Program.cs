@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RunGroopWebApp.Data;
 using RunGroupWebApp.Data;
@@ -11,6 +13,7 @@ namespace RunGroupWebApp
 {
     public class Program
     {
+        //public static async Task Main(string[] args)
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -27,13 +30,20 @@ namespace RunGroupWebApp
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            builder.Services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddMemoryCache();
+            builder.Services.AddSession();
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie();
 
-            var app = builder.Build();
+                var app = builder.Build();
 
             if (args.Length == 1 && args[0].ToLower() == "seeddata")
             {
-                //await Seed.SeedUsersAndRolesAsync(app);
-                Seed.SeedData(app);
+               // await Seed.SeedUsersAndRolesAsync(app);
+                //Seed.SeedData(app);
+                //dotnet run seeddata
             }
 
             // Configure the HTTP request pipeline.
@@ -49,6 +59,7 @@ namespace RunGroupWebApp
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
